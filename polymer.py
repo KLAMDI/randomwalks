@@ -5,13 +5,15 @@ import random
 
 #The number of base pairs
 N = 10
+Nlist = [10, 50, 100, 500, 1000, 5000, 10000]
+meanlist = []
 
 def constantwalk(N):
     crosslist = []
     rlist = []
     
-    #This loop whil generate mutliple siumlations
-    for i in range(0, 10000):    
+    #This loop will generate mutliple siumlations
+    for i in range(0, 1000):    
         xnext = 0
         ynext = 0
         xlist = [0]
@@ -34,12 +36,14 @@ def constantwalk(N):
         rlist.append(r)
         
     #The mean end-to-end distance is printed
-    print np.mean(rlist)
-        
-    # plt.figure(1)
-    # plt.clf()
-    # plt.plot(xlist, ylist, 'b', xlist[0], ylist[0], 'go', xlist[-1], ylist[-1], 
-    #     'ro')
-    # plt.show()
+    return np.mean(rlist)
+
+##A plot is generated of the end-to-end distance as a function of base pair 
+#number
+for i in Nlist:
+    meanlist.append(constantwalk(i))
     
-constantwalk(N)
+plt.figure(1)
+plt.clf()
+plt.plot(Nlist, meanlist, 'b')
+plt.show()

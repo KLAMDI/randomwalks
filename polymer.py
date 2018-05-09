@@ -26,7 +26,7 @@ def constantwalk(N):
             ynext = math.sin(angle) + ylist[j]     
             xlist.append(xnext)
             ylist.append(ynext)
-            rcm += math.sqrt((xlist[-1] - xlist[0])**2 + (ylist[-1] - 
+            rcm += (1/N)*math.sqrt((xlist[-1] - xlist[0])**2 + (ylist[-1] - 
                 ylist[0])**2)
         #After every simulation the end-to-end distance is calculated
         r = math.sqrt((xlist[-1] - xlist[0])**2 + (ylist[-1] - ylist[0])**2)

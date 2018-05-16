@@ -1,8 +1,14 @@
-import matplotlib.pyplot as plt
-import random as rd
+# -*- coding: utf-8 -*-
 import math
 import numpy as np
+import matplotlib.pyplot as plt
+import random
+import time
 
+starttime = time.time()
+
+##The following two functions will check if two line segments intersect based on 
+#their oriëntation.
 def ccw(Ax, Ay, Bx, By, Cx, Cy):
     return (Cy-Ay)*(Bx-Ax) > (By-Ay)*(Cx-Ax)
     
@@ -11,69 +17,78 @@ def intersect(x0, y0, x1, y1, xprev, yprev, xnext, ynext):
         ynext) and ccw(xprev, yprev, xnext, ynext, x0, y0) != ccw(xprev, yprev, 
         xnext, ynext, x1, y1)
 
+#The number of base pairs and number of rotations
 N = 100
+Nrot = 100
 
-xlist = [0]
-ylist = [0]
-for n in range(0, N):
-    xlist.append(xlist[n] + 1)
-    ylist.append(0)
- 
-for j in range(0, N):
-    pivot_site = int(rd.random()*N)
-    xlistrot = []
-    ylistrot = []
-    int_check = False
+def avoidingwalk(N, Nrot):
+    j = 0
+    xlist = [0]
+    ylist = [0]
+    dlist = []
     
-    for s in range(pivot_site, N+1):
-        xlistrot.append(xlist[s])
-        ylistrot.append(ylist[s])
+    #First, generate a straight line 
+    for n in range(0, N):
+        xlist.append(n + 1)
+        ylist.append(0)
     
-    angle = 2*math.pi*rd.random()
-    xlistrot = np.array(xlistrot)
-    ylistrot = np.array(ylistrot)
-    xlistrotnew = math.cos(angle)*xlistrot - math.sin(angle)*ylistrot
-    ylistrotnew = math.sin(angle)*xlistrot + math.cos(angle)*ylistrot
-    
-    #Checks if rotation is done correctly
-    # if xlistrotnew[len(xlistrot)-2] == (math.cos(angle)*xlistrot[len(xlistrot)-2] - math.sin(angle)*ylistrot[len(xlistrot)-2]):
-    #     print 'yay'
-    # else:
-    #     print 'wtf'
-
-    for n in range(0, len(xlistrot)-1):
-        if int_check == False:
-            for p in range(0, pivot_site):
-                if intersect(xlist[p], ylist[p], xlist[p+1], ylist[p+1], xlistrotnew[n], ylistrotnew[n], xlistrotnew[n+1], ylistrotnew[n+1]):
-                    int_check = True
-                    # print '(%f, %f), (%f, %f)' % (xlist[p], ylist[p], xlist[p+1], ylist[p+1])
-                    # print '(%f, %f), (%f, %f)' % (xlistrotnew[n], ylistrotnew[n], xlistrotnew[n+1], ylistrotnew[n+1])
-                    break
+    #This loop goes on untill the polymer has rotated Nrot times    
+    while j <= Nrot - 1:
+        
+        #Choose a random pivot site
+        pivot_site = int(random.random()*N)
+        int_check = False
+        
+        #Seperate the part that is to be rotated
+        xlistrot = np.array(xlist[pivot_site + 1:N + 1])
+        ylistrot = np.array(ylist[pivot_site + 1:N + 1])
+        
+        #Perform a rotation on the line segment    
+        angle = 2*math.pi*random.random()
+        xlistrotnew = (math.cos(angle)*(xlistrot-xlist[pivot_site]) - 
+            math.sin(angle)*(ylistrot-ylist[pivot_site]) + xlist[pivot_site]) 
+        ylistrotnew = (math.sin(angle)*(xlistrot-xlist[pivot_site]) + 
+            math.cos(angle)*(ylistrot-ylist[pivot_site]) + ylist[pivot_site]) 
+        
+        #Check if the new segment doesn't intersect with the original segment
+        for f in range(1, N):
+            if int_check == True:
+                break
                 
-                #Alternative method, doesn't yield better results
-                # if (max(xlist[p],xlist[p+1]) < min(xlistrotnew[n],xlistrotnew[n+1])):
-                #     break
-                # else:
-                #     A1 = (ylist[p]-ylist[p+1])/(xlist[p]-xlist[p+1]) # Pay attention to not divide by zero
-                #     A2 = (ylistrotnew[n]-ylistrotnew[n+1])/(xlistrotnew[n]-xlistrotnew[n+1]) # Pay attention to not divide by zero
-                #     b1 = ylist[p]-A1*xlist[p] 
-                #     b2 = ylistrotnew[n]-A2*xlistrotnew[n]
-                #     Xa = (b2 - b1) / (A1 - A2) # Once again, pay attention to not divide by zero
-                #     
-                #     if Xa < max(min(xlist[p],xlist[p+1]), min(xlistrotnew[n],xlistrotnew[n+1])) and Xa > min(max(xlist[p],xlist[p+1]), max(xlistrotnew[n],xlistrotnew[n+1])):
-                #         break
-                #     else:
-                #         int_check == True
+            #Special check for the segment starting from pivot site
+            if intersect(xlist[f-1], ylist[f-1], xlist[f], ylist[f], 
+                xlist[pivot_site], ylist[pivot_site], xlistrotnew[0], 
+                ylistrotnew[0]) == True:
+                int_check = True
+                break
+            for g in range(1, len(xlistrotnew)):
+                if intersect(xlist[f-1], ylist[f-1], xlist[f], ylist[f], 
+                xlistrotnew[g-1], ylistrotnew[g-1], xlistrotnew[g], 
+                ylistrotnew[g]) == True:
+                    int_check = True
+                    break
+                        
+        if int_check == False:
+            j += 1
+            
+            #The rotated segment is given the new coördinates
+            del xlist[pivot_site + 1: N + 1]
+            del ylist[pivot_site + 1: N + 1]
+            xlist += xlistrotnew.tolist()
+            ylist += ylistrotnew.tolist()
 
-    if int_check == False:
-        # print 'hello'
-        for s in range(pivot_site, N + 1):
-            xlist[s] = xlistrotnew[s-pivot_site]
-            ylist[s] = ylistrotnew[s-pivot_site]
+    for i in range(0, N):
+        dlist.append(math.sqrt(xlist[i]**2 + ylist[i]**2))
+    rcm = np.sum(dlist)/len(dlist)
 
-plt.close()        
+    return (xlist, ylist, rcm)   
+ 
+rlist = avoidingwalk(N, Nrot)
+print 'End-to-end distance: %f' %(math.sqrt(rlist[0][-1]**2 + rlist[1][-1]**2))
+print 'Center of mass: %f' % (rlist[2])       
 plt.figure(1)
-plt.plot(xlist, ylist)
-# plt.plot([xlist[p],xlist[p+1]], [ylist[p], ylist[p+1]], 'g--')
-# plt.plot([xlistrotnew[n], ylistrotnew[n]], [xlistrotnew[n+1], ylistrotnew[n+1]], 'r--')
+plt.clf()
+plt.scatter(rlist[0], rlist[1])
+plt.plot(rlist[0], rlist[1], rlist[0][0], rlist[1][0], 'go')
 plt.show()
+print 'Duration: %f seconds' % (time.time()-starttime)

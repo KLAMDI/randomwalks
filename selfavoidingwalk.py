@@ -37,7 +37,7 @@ def avoidingwalk(N, Nrot):
     while j <= Nrot - 1:
         
         #Choose a random pivot site
-        pivot_site = int(random.random()*N)
+        pivot_site = random.randrange(0, N)
         int_check = False
         
         #Seperate the part that is to be rotated
@@ -68,7 +68,7 @@ def avoidingwalk(N, Nrot):
                 ylistrotnew[g]) == True:
                     int_check = True
                     break
-                        
+                                   
         if int_check == False:
             j += 1
             
@@ -90,7 +90,7 @@ rlist = avoidingwalk(N, Nrot)
 for i in range(0, 10000):
     poslists = avoidingwalk(10, 10)
     pdflist.append(math.sqrt(poslists[0][-1]**2 + poslists[1][-1]**2))
-       
+        
 print 'End-to-end distance: %f' %(math.sqrt(rlist[0][-1]**2 + rlist[1][-1]**2))
 print 'Center of mass: %f' % (rlist[2])       
 plt.figure(1)

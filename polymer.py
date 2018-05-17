@@ -3,6 +3,10 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+import collections
+import time
+
+starttime = time.time()
 
 #The number of base pairs
 N = 10
@@ -47,8 +51,10 @@ def constantwalk(N):
             xlist[j], ylist[j], xnext, ynext) == True:
                 cross = j + 1
             
+            #Calculate the center of mass
             rcm += (1/float(N))*math.sqrt((xlist[-1])**2 + (ylist[-1])**2)
         
+        #Calculate the radius of gyration
         for k in range(0, N):
             Rg += (1/N+1)*(math.sqrt(xlist[k]**2 + ylist[k]**2) - rcm)**2
         Rglist.append(Rg)
@@ -58,12 +64,13 @@ def constantwalk(N):
         rlist.append(r)
         if cross > 0:
             crosslist.append(cross)
-        
-    #The mean end-to-end distance is printed
-    return np.mean(rlist), np.mean(crosslist), np.mean(Rglist)
     
-##A plot is generated of the end-to-end distance as a function of base pair 
-#number
+    #The most frequent first-crossing step is filtered
+    frequentstep = collections.Counter(crosslist).most_common()[0][0] 
+    return np.mean(rlist), frequentstep, np.mean(Rglist)
+  
+##A plot is generated of the end-to-end distance and Radius of gyration 
+#as a function of base pair number
 for i in Nlist:
     rmeanlist.append(constantwalk(i)[0])
     Rgmeanlist.append(constantwalk(i)[2])
@@ -82,3 +89,4 @@ plt.title('Radius of gyration as a function of base pairs')
 plt.xlabel('N')
 plt.ylabel('$R_{g}$')
 plt.show()
+print 'Duration: %f seconds' % (time.time()-starttime)

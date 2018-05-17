@@ -17,9 +17,10 @@ def intersect(x0, y0, x1, y1, xprev, yprev, xnext, ynext):
         ynext) and ccw(xprev, yprev, xnext, ynext, x0, y0) != ccw(xprev, yprev, 
         xnext, ynext, x1, y1)
 
-#The number of base pairs and number of rotations
+#The starting variables and lists
 N = 100
 Nrot = 100
+pdflist = []
 
 def avoidingwalk(N, Nrot):
     j = 0
@@ -76,19 +77,36 @@ def avoidingwalk(N, Nrot):
             del ylist[pivot_site + 1: N + 1]
             xlist += xlistrotnew.tolist()
             ylist += ylistrotnew.tolist()
-
+    
+    #Calculation of the center of mass
     for i in range(0, N):
         dlist.append(math.sqrt(xlist[i]**2 + ylist[i]**2))
     rcm = np.sum(dlist)/len(dlist)
 
     return (xlist, ylist, rcm)   
- 
+
+#Computing the end-to-end distance 10000 times for the pdf 
 rlist = avoidingwalk(N, Nrot)
+for i in range(0, 10000):
+    poslists = avoidingwalk(10, 10)
+    pdflist.append(math.sqrt(poslists[0][-1]**2 + poslists[1][-1]**2))
+       
 print 'End-to-end distance: %f' %(math.sqrt(rlist[0][-1]**2 + rlist[1][-1]**2))
 print 'Center of mass: %f' % (rlist[2])       
 plt.figure(1)
 plt.clf()
 plt.scatter(rlist[0], rlist[1])
 plt.plot(rlist[0], rlist[1], rlist[0][0], rlist[1][0], 'go')
+plt.title('Self-avoiding random walk') 
+plt.xlabel('x')
+plt.ylabel('y')
+    
+plt.figure(2)
+plt.clf()
+plt.hist(pdflist, bins = np.arange(min(pdflist), max(pdflist) + 0.1, 0.1))
+plt.title('Pdf of end-to-end distance')
+plt.xlabel('r')
+plt.ylabel('counts')
 plt.show()
+
 print 'Duration: %f seconds' % (time.time()-starttime)

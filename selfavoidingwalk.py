@@ -27,6 +27,7 @@ def avoidingwalk(N, Nrot):
     xlist = [0]
     ylist = [0]
     dlist = []
+    Rg = 0
     
     #First, generate a straight line 
     for n in range(0, N):
@@ -82,8 +83,10 @@ def avoidingwalk(N, Nrot):
     for i in range(0, N):
         dlist.append(math.sqrt(xlist[i]**2 + ylist[i]**2))
     rcm = np.sum(dlist)/len(dlist)
+    for j in range(0, N):
+        Rg += (1/N+1)*(math.sqrt(xlist[i]**2 + ylist[i]**2)-rcm)**2
 
-    return (xlist, ylist, rcm)   
+    return (xlist, ylist, Rg)   
 
 #Computing the end-to-end distance 10000 times for the pdf 
 rlist = avoidingwalk(N, Nrot)
@@ -92,7 +95,7 @@ for i in range(0, 10000):
     pdflist.append(math.sqrt(poslists[0][-1]**2 + poslists[1][-1]**2))
         
 print 'End-to-end distance: %f' %(math.sqrt(rlist[0][-1]**2 + rlist[1][-1]**2))
-print 'Center of mass: %f' % (rlist[2])       
+print 'Radius of gyration: %f' % (rlist[2])       
 plt.figure(1)
 plt.clf()
 plt.scatter(rlist[0], rlist[1])

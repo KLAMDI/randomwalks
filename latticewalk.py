@@ -1,7 +1,6 @@
 ##Note: this program was copied from the website https://introcs.cs.princeton.e
 #du/python/14array/selfavoid.py.html.
 
-import math
 import numpy as np
 import matplotlib.pyplot as plt
 import random

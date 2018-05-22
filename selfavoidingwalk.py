@@ -21,6 +21,7 @@ def intersect(x0, y0, x1, y1, xprev, yprev, xnext, ynext):
 N = 100
 Nrot = 100
 pdflist = []
+pdfrglist = []
 
 def avoidingwalk(N, Nrot):
     j = 1
@@ -79,24 +80,26 @@ def avoidingwalk(N, Nrot):
             ylist += ylistrotnew.tolist()
     
     #Calculation of the center of mass
-    for i in range(0, N):
+    for i in range(0, N+1):
         dlist.append(math.sqrt(xlist[i]**2 + ylist[i]**2))
     rcm = np.sum(dlist)/len(dlist)
-    for j in range(0, N):
-        Rg += (1/N+1)*(math.sqrt(xlist[i]**2 + ylist[i]**2)-rcm)**2
+    for j in range(0, N+1):
+        Rg += (1./(N+1))*(math.sqrt(xlist[j]**2 + ylist[j]**2)-rcm)**2
 
-    return (xlist, ylist, Rg)   
+    return (xlist, ylist, math.sqrt(Rg))   
 
 #Computing the end-to-end distance 10000 times for the pdf 
 rlist = avoidingwalk(N, Nrot)
 for i in range(0, 10000):
     poslists = avoidingwalk(10, 10)
     pdflist.append(math.sqrt(poslists[0][-1]**2 + poslists[1][-1]**2))
+    pdfrglist.append(poslists[2])
         
 print 'End-to-end distance: %f' %(math.sqrt(rlist[0][-1]**2 + rlist[1][-1]**2))
 print 'Radius of gyration: %f' % (rlist[2])       
 plt.figure(1)
 plt.clf()
+plt.axis('equal')
 plt.scatter(rlist[0], rlist[1])
 plt.plot(rlist[0], rlist[1], rlist[0][0], rlist[1][0], 'go', rlist[0][-1], rlist[1][-1], 'ro')
 plt.title('Self-avoiding random walk') 
@@ -108,6 +111,14 @@ plt.clf()
 plt.hist(pdflist, bins = np.arange(min(pdflist), max(pdflist) + 0.1, 0.1))
 plt.title('Pdf of end-to-end distance')
 plt.xlabel('r')
+plt.ylabel('counts')
+plt.show()
+
+plt.figure(3)
+plt.clf()
+plt.hist(pdfrglist, bins = np.arange(min(pdfrglist), max(pdfrglist) + 0.1, 0.1))
+plt.title('Pdf of Radius of Gyration')
+plt.xlabel('Rg')
 plt.ylabel('counts')
 plt.show()
 

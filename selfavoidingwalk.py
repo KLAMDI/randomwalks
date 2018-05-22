@@ -18,8 +18,8 @@ def intersect(x0, y0, x1, y1, xprev, yprev, xnext, ynext):
         xnext, ynext, x1, y1)
 
 #The starting variables and lists
-N = 10
-Nrot = 0
+N = 100
+Nrot = 100
 pdflist = []
 
 def avoidingwalk(N, Nrot):
@@ -98,7 +98,7 @@ print 'Radius of gyration: %f' % (rlist[2])
 plt.figure(1)
 plt.clf()
 plt.scatter(rlist[0], rlist[1])
-plt.plot(rlist[0], rlist[1], rlist[0][0], rlist[1][0], 'go')
+plt.plot(rlist[0], rlist[1], rlist[0][0], rlist[1][0], 'go', rlist[0][-1], rlist[1][-1], 'ro')
 plt.title('Self-avoiding random walk') 
 plt.xlabel('x')
 plt.ylabel('y')

@@ -18,12 +18,12 @@ def intersect(x0, y0, x1, y1, xprev, yprev, xnext, ynext):
         xnext, ynext, x1, y1)
 
 #The starting variables and lists
-N = 100
-Nrot = 100
+N = 10
+Nrot = 0
 pdflist = []
 
 def avoidingwalk(N, Nrot):
-    j = 0
+    j = 1
     xlist = [0]
     ylist = [0]
     dlist = []
@@ -35,7 +35,7 @@ def avoidingwalk(N, Nrot):
         ylist.append(0)
     
     #This loop goes on untill the polymer has rotated Nrot times    
-    while j <= Nrot - 1:
+    while j <= Nrot:
         
         #Choose a random pivot site
         pivot_site = random.randrange(0, N)
@@ -54,21 +54,20 @@ def avoidingwalk(N, Nrot):
         
         #Check if the new segment doesn't intersect with the original segment
         for f in range(1, N):
-            if int_check == True:
-                break
+            if int_check != True:
                 
-            #Special check for the segment starting from pivot site
-            if intersect(xlist[f-1], ylist[f-1], xlist[f], ylist[f], 
-                xlist[pivot_site], ylist[pivot_site], xlistrotnew[0], 
-                ylistrotnew[0]) == True:
-                int_check = True
-                break
-            for g in range(1, len(xlistrotnew)):
+                #Special check for the segment starting from pivot site
                 if intersect(xlist[f-1], ylist[f-1], xlist[f], ylist[f], 
-                xlistrotnew[g-1], ylistrotnew[g-1], xlistrotnew[g], 
-                ylistrotnew[g]) == True:
+                    xlist[pivot_site], ylist[pivot_site], xlistrotnew[0], 
+                    ylistrotnew[0]):
                     int_check = True
                     break
+                for g in range(1, len(xlistrotnew)):
+                    if intersect(xlist[f-1], ylist[f-1], xlist[f], ylist[f], 
+                    xlistrotnew[g-1], ylistrotnew[g-1], xlistrotnew[g], 
+                    ylistrotnew[g]):
+                        int_check = True
+                        break
                                    
         if int_check == False:
             j += 1

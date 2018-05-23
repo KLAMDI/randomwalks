@@ -93,7 +93,6 @@ rlist = avoidingwalk(N, Nrot)
 for i in range(0, 10000):
     poslists = avoidingwalk(10, 10)
     pdflist.append(math.sqrt(poslists[0][-1]**2 + poslists[1][-1]**2))
-    pdfrglist.append(poslists[2])
         
 print 'End-to-end distance: %f' %(math.sqrt(rlist[0][-1]**2 + rlist[1][-1]**2))
 print 'Radius of gyration: %f' % (rlist[2])       
@@ -111,14 +110,6 @@ plt.clf()
 plt.hist(pdflist, bins = np.arange(min(pdflist), max(pdflist) + 0.1, 0.1))
 plt.title('Pdf of end-to-end distance')
 plt.xlabel('r')
-plt.ylabel('counts')
-plt.show()
-
-plt.figure(3)
-plt.clf()
-plt.hist(pdfrglist, bins = np.arange(min(pdfrglist), max(pdfrglist) + 0.1, 0.1))
-plt.title('Pdf of Radius of Gyration')
-plt.xlabel('Rg')
 plt.ylabel('counts')
 plt.show()
 

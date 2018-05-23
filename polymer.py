@@ -55,9 +55,9 @@ def constantwalk(N):
             rcm += (1/float(N))*math.sqrt((xlist[-1])**2 + (ylist[-1])**2)
         
         #Calculate the radius of gyration
-        for k in range(0, N):
-            Rg += (1/N+1)*(math.sqrt(xlist[k]**2 + ylist[k]**2) - rcm)**2
-        Rglist.append(Rg)
+        for k in range(0, N+1):
+            Rg += (1./(N+1))*(math.sqrt(xlist[k]**2 + ylist[k]**2) - rcm)**2
+        Rglist.append(math.sqrt(Rg))
                 
         #After every simulation the end-to-end distance is calculated
         r = math.sqrt((xlist[-1] - xlist[0])**2 + (ylist[-1] - ylist[0])**2)
